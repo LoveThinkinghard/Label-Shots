@@ -48,10 +48,54 @@ flask init-db
 
 所有管理员都不能看见密码，密码以密文存储，采用带盐哈希加密，技术上也无法由密文得到明文。
 
-## Serve with uWSGI and Nginx
+2019.9.10
+
+为在生产环境部署做出必要改变，主要变化有：
+1. 添加`labelshot.py`文件，用来启动应用
+2. 添加`uwsgi.ini`文件，对启动`uwsgi`进行必要配置
+3. 添加`nginx config/labelshot`，为反向代理服务器`nginx`的配置
+4. 修改一个小bug——网页底部未固定在屏幕底
+
+## 用uWSGI和Nginx部署
+
+部署平台：`Ubuntu 16.04`
+
+需要安装：`python3`，`virtualenv`（或`conda`的虚拟环境），`uwsgi`，`flask`，`nginx`
+
+### 安装参考：
+
+#### nginx
+
+```
+sudo apt-get update
+sudo apt-get install python3-pip python3-dev nginx
+```
+
+#### flask
+
+```
+pip install flask
+```
+
+#### uwsgi
+
+```
+pip install uwsgi
+```
+如果在conda的虚拟环境下出现问题，可以使用：  
+```
+conda install -c conda-forge uwsgi
+```
+### 安装完之后
+
+将`labelshot`整个文件夹放到Ubuntu服务器的`/var/www/`目录下（放到哪儿其实不重要）
+
+将`nginx config`文件夹下的`labelshot`放到Ubuntu服务器的`/etc/nginx/sites-enabled/`目录下，并把原来的`default`文件删掉（这个得放对）
 
 Reference: 
+
 https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-uwsgi-and-nginx-on-ubuntu-16-04
 
 https:
+
 https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-16-04
