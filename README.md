@@ -47,3 +47,7 @@ flask init-db
 | 3 | 超级管理员，可以添加和删除所有用户，除了自己，目前只能在初始化数据库时产生一个，用户名和密码都为superAdmin，初次使用后记得及时修改密码 |
 
 所有管理员都不能看见密码，密码以密文存储，采用带盐哈希加密，技术上也无法由密文得到明文。
+
+## Serve with uWSGI and Nginx
+
+Reference: https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-uwsgi-and-nginx-on-ubuntu-16-04
