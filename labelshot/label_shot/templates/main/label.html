@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}Label{% endblock %}
+
+{% block header %}
+  {% if g.user %}
+    <h1 class="display-5">Shot No.</h1>
+    <h1 class="display-3">{{ items["shot_no"] }}</h1>
+    <a class="btn btn-warning btn-lg action" title="跳过此炮进入下一炮" href="{{ url_for('main.next') }}">Next</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col">
+        <div id="main" style="height:350px;" class="mb-3"></div>
+    </div>
+    <div class="col">
+      <table class="table table-hover">
+        <tbody>
+          {% for item in items["items"] %}
+            <tr data-toggle="tooltip" title="{{ item['description'] }}">
+              <th scope="row">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" name="check-{{item['name']}}" id="check-{{item['name']}}">
+                  <label class="custom-control-label" for="check-{{item['name']}}">{{ item['name'] }}</label>
+                </div>
+              </th>
+              {% if item['type'] == 'bool' %}
+                <td><select class="form-control wtf-label" name="{{ item['name'] }}">
+                    <option selected>False</option>
+                    <option>True</option>
+                    </select></td>
+              {% elif item['type'] == 'multi' %}
+                <td><select class="form-control wtf-label" name="{{ item['name'] }}">
+                    <option selected>{{ item['value'][0] }}</option>
+                    {% for value in item['value'][1:] %}
+                      <option>{{ value }}</option>
+                    {% endfor %}
+                  </select></td>
+              {% elif item['type'] == 'float' %}
+                <td><input type="number" class="form-control wtf-label" name="{{ item['name'] }}"></td>
+              {% endif %}
+            </tr>
+            {% if loop.last and g.user %}
+              <tr><th scope="row" colspan="2"><div class="text-center"><button class="btn btn-success" id="submit" type="submit" title="提交成功后会直接进入下一炮">Submit and next</button></div></th></tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+  $(document).ready(function(){
+    $("[data-toggle='tooltip']").tooltip();
+    $("#submit").click(function(){
+      x = document.getElementsByClassName("wtf-label")
+      y = document.getElementsByClassName("custom-control-input")
+      var data = new Array()
+      var len = y.length
+      for (var i = 0; i < len; i++) {
+        if (y[i].checked) {
+          data = data.concat({name:x[i].name, value:x[i].value})
+        }
+      }
+      if (data == "") {
+        alert("请选择要提交的内容")
+      }
+      else {
+        $.ajax({type:"POST",
+                url:"/newlabel",
+                data:JSON.stringify({data:data,shot_no:{{ items["shot_no"] }}}),
+                contentType:"application; charset=UTF-8",
+                dataType:"json",
+                error:function(respMsg){
+                  alert("fail")},
+                success:function(respMsg){
+                  window.location.replace("/next");
+              }})
+      }
+    })
+    // 指定图表的配置项和数据
+    option = {
+        tooltip: {
+            trigger: 'axis',
+            position: function (pt) {
+                return [pt[0], '10%'];
+            }
+        },
+        title: {
+            left: 'center',
+            text: '{{ visual_data["name"] }}',
+        },
+        toolbox: {
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: {{ visual_data["x"] }}
+        },
+        yAxis: {
+            type: 'value',
+            boundaryGap: [0, '100%']
+        },
+        dataZoom: [{
+            type: 'inside',
+            start: 0,
+            end: 10
+        }, {
+            start: 0,
+            end: 10,
+            handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+            handleSize: '80%',
+            handleStyle: {
+                color: '#fff',
+                shadowBlur: 3,
+                shadowColor: 'rgba(0, 0, 0, 0.6)',
+                shadowOffsetX: 2,
+                shadowOffsetY: 2
+            }
+        }],
+        series: [
+            {
+                name:'{{ visual_data["name"] }}',
+                type:'line',
+                smooth:false,
+                symbol: 'none',
+                sampling: 'average',
+                itemStyle: {
+                    color: 'rgb(255, 70, 131)'
+                },
+                data:{{ visual_data["y"] }}
+            }
+        ]
+    };
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById("main"));
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+  })
+</script>
+{% endblock %}
+
