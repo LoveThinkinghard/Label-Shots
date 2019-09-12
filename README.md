@@ -92,10 +92,44 @@ conda install -c conda-forge uwsgi
 
 将`nginx config`文件夹下的`labelshot`放到Ubuntu服务器的`/etc/nginx/sites-enabled/`目录下，并把原来的`default`文件删掉（这个得放对）
 
-Reference: 
+参考链接，里面有从安装到配置的完整详细步骤（如果想实现服务器启动自动运行网页，里面也有方法）：
 
 https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-uwsgi-and-nginx-on-ubuntu-16-04
 
-https:
+### 启动
+
+#### 启动uwsgi
+
+在`python`虚拟环境中
+
+```
+uwsgi uwsgi.ini
+```
+
+#### 启动ngnix
+
+启动或（重新配置后）重启Nginx
+
+```
+sudo systemctl restart nginx
+```
+
+如果开启了ufw，输入
+
+```
+sudo ufw allow 'Nginx Full'
+```
+
+如果没有开启，输入
+
+```
+sudo ufw enable
+```
+
+现在可以访问本机IP，应该一切ok
+
+### 使用https
+
+现在还没有，如果想弄可以参考:
 
 https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-16-04
