@@ -12,7 +12,7 @@ http://flask.pocoo.org/docs/1.0/installation/#python-version
 
 ## 运行
 
-安装完成之后，进入`label-shot`文件夹所在目录，对于`Windows`在`cmd`里执行下列命令
+`Flask`安装完成之后，进入`label_shot`文件夹所在目录，即本仓库里的`labelshot`目录，对于`Windows`在`cmd`里执行下列命令
 
 ```cmd
 set FLASK_APP=label_shot
