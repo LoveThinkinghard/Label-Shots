@@ -1,12 +1,18 @@
 # 使用说明
 
+## 前言
+
+此项目是为本校聚变所某实验室制作的破裂数据库打标签网站的中前端部分，使用[Flask](https://dormousehole.readthedocs.io/en/latest/)为后台框架，使用[Bootstrap](https://getbootstrap.com/)以及[JQuery](https://jquery.com/)等前端库，特别地，使用[ECharts](https://www.echartsjs.com/en/index.html)库实现在线的数据绘图。这是一个轻量级应用，可以方便的浏览在线浏览数据并打标签，鼠标悬停时会显示某项标签的解释。预览见下图
+
+![preview](./img/preview.png)
+
 ## Flask安装
 
 http://flask.pocoo.org/docs/1.0/installation/#python-version
 
 ## 运行
 
-进入`label-shot`文件夹所在目录，对于`Windows`在`cmd`里执行下列命令
+安装完成之后，进入`label-shot`文件夹所在目录，对于`Windows`在`cmd`里执行下列命令
 
 ```cmd
 set FLASK_APP=label_shot
